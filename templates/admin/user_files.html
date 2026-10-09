@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+{% block title %}{{ user.username }} · Admin{% endblock %}
+{% block content %}
+<a class="back-link" href="{{ url_for('admin.users') }}">{{ icon('arrow-left') }} All users</a>
+<div class="page-head">
+  <div class="head-user">
+    <span class="avatar xl hue-{{ user.id % 6 }}">{{ user.username[:1] | upper }}</span>
+    <div>
+      <p class="eyebrow">{{ 'Admin' if user.is_admin else 'User' }} folder</p>
+      <h1>{{ user.username }}</h1>
+    </div>
+  </div>
+</div>
+
+<div class="grid2">
+  <section class="card glass">
+    <h2>{{ icon('upload') }} Upload files</h2>
+    <form method="post" action="{{ url_for('admin.upload', user_id=user.id) }}" enctype="multipart/form-data" class="stack">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+      <label class="dropzone" data-dropzone>
+        <input type="file" name="files" multiple required>
+        <span class="dz-icon">{{ icon('upload') }}</span>
+        <span class="dz-title">Drop files here or <u>browse</u></span>
+        <span class="dz-files muted">Any file type · multiple allowed</span>
+      </label>
+      <button class="btn primary">{{ icon('upload') }} Upload</button>
+    </form>
+  </section>
+
+  <section class="card glass">
+    <h2>{{ icon('key') }} Reset password</h2>
+    <form method="post" action="{{ url_for('admin.reset_password', user_id=user.id) }}" class="stack">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+      <span class="input-wrap">
+        {{ icon('lock') }}
+        <input name="password" type="password" placeholder="New password (min 8)" required minlength="8" autocomplete="new-password">
+        <button type="button" class="reveal" data-reveal aria-label="Show password">{{ icon('eye') }}</button>
+      </span>
+      <button class="btn">{{ icon('key') }} Set password</button>
+    </form>
+  </section>
+</div>
+
+<h2 class="section-title">Files</h2>
+{% macro download_url(name) %}{{ url_for('admin.download', user_id=user.id, filename=name) }}{% endmacro %}
+{% macro delete_url(name) %}{{ url_for('admin.delete_file', user_id=user.id, filename=name) }}{% endmacro %}
+{% macro view_url(name) %}{{ url_for('admin.view', user_id=user.id, filename=name) }}{% endmacro %}
+{% set empty_hint = 'Upload files above to share them with ' ~ user.username ~ '.' %}
+{% include "_file_table.html" %}
+{% endblock %}

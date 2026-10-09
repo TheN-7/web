@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% block title %}{{ name }} · File Portal{% endblock %}
+{% block main_class %}container wide{% endblock %}
+{% block content %}
+<div class="viewer-bar glass">
+  <a class="icon-btn" href="{{ back_url }}" title="Back" aria-label="Back">{{ icon('arrow-left') }}</a>
+  <span class="ficon k-{{ kind or 'other' }}">{{ icon(kind or 'file') }}</span>
+  <h1 class="viewer-title">{{ name }}</h1>
+  <a class="btn primary sm" href="{{ download_url }}">{{ icon('download') }}<span>Download</span></a>
+</div>
+
+{% if kind is none %}
+  <div class="empty glass">
+    <div class="empty-icon">{{ icon('file') }}</div>
+    <h3>No preview for this file type</h3>
+    <p class="muted"><a href="{{ download_url }}">Download it instead</a>.</p>
+  </div>
+{% elif kind == "image" %}
+  <div class="viewer-media glass"><img src="{{ raw_url }}" alt="{{ name }}"></div>
+{% elif kind == "video" %}
+  <div class="viewer-media glass"><video src="{{ raw_url }}" controls preload="metadata"></video></div>
+{% elif kind == "audio" %}
+  <div class="viewer-media glass"><audio src="{{ raw_url }}" controls preload="metadata"></audio></div>
+{% elif client_rendered %}
+  <div id="doc-status" class="empty glass"><span class="spinner"></span><span class="status-text">Loading preview…</span></div>
+  <div id="doc-viewer" class="doc-viewer" data-kind="{{ kind }}" data-src="{{ raw_url }}"></div>
+  {% if kind == "docx" %}
+    <script src="{{ url_for('static', filename='vendor/jszip.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='vendor/docx-preview.min.js') }}"></script>
+  {% elif kind == "pptx" %}
+    <script src="{{ url_for('static', filename='vendor/pptx-preview.umd.js') }}"></script>
+  {% elif kind == "sheet" %}
+    <script src="{{ url_for('static', filename='vendor/xlsx.full.min.js') }}"></script>
+  {% endif %}
+  <script src="{{ url_for('static', filename='viewer.js') }}"></script>
+{% else %}
+  <iframe class="viewer-frame" src="{{ raw_url }}" title="{{ name }}"></iframe>
+{% endif %}
+{% endblock %}

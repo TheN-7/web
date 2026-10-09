@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+{% block title %}{{ code }} · File Portal{% endblock %}
+{% block main_class %}login-wrap{% endblock %}
+{% block content %}
+<div class="login-card glass glass-strong error-card">
+  <div class="error-code">{{ code }}</div>
+  <p>{{ message }}</p>
+  <a class="btn primary" href="{{ url_for('index') }}">{{ icon('arrow-left') }} Back to start</a>
+</div>
+{% endblock %}

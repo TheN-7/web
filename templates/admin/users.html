@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+{% block title %}Users · Admin{% endblock %}
+{% block content %}
+<div class="page-head">
+  <div>
+    <p class="eyebrow">Admin</p>
+    <h1>Users</h1>
+  </div>
+</div>
+
+<div class="stats">
+  <div class="stat glass"><span class="stat-icon">{{ icon('users') }}</span><div><b>{{ stats.users }}</b><span>Accounts</span></div></div>
+  <div class="stat glass"><span class="stat-icon">{{ icon('shield') }}</span><div><b>{{ stats.admins }}</b><span>Admins</span></div></div>
+  <div class="stat glass"><span class="stat-icon">{{ icon('file') }}</span><div><b>{{ stats.files }}</b><span>Files</span></div></div>
+  <div class="stat glass"><span class="stat-icon">{{ icon('database') }}</span><div><b>{{ stats.size | filesize }}</b><span>Storage used</span></div></div>
+</div>
+
+<section class="card glass">
+  <h2>{{ icon('plus') }} Add user</h2>
+  <form method="post" action="{{ url_for('admin.add_user') }}" class="row">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+    <span class="input-wrap">{{ icon('user') }}<input name="username" placeholder="Username" required maxlength="64" autocomplete="off"></span>
+    <span class="input-wrap">{{ icon('lock') }}<input name="password" type="password" placeholder="Password (min 8)" required minlength="8" autocomplete="new-password"></span>
+    <label class="toggle"><input type="checkbox" name="is_admin"><span class="track"></span> Admin</label>
+    <button class="btn primary">{{ icon('plus') }} Add user</button>
+  </form>
+</section>
+
+<div class="list-tools">
+  <span class="count-pill">{{ users | length }} account{{ '' if users | length == 1 else 's' }}</span>
+  <label class="search glass">
+    {{ icon('search') }}
+    <input type="search" placeholder="Search users…" data-filter="#user-list" aria-label="Search users">
+  </label>
+</div>
+<div class="file-list glass" id="user-list">
+  {% for u in users %}
+  <div class="file-row" data-name="{{ u.username | lower }}" style="--i: {{ loop.index0 }}">
+    <span class="avatar lg hue-{{ u.id % 6 }}">{{ u.username[:1] | upper }}</span>
+    <div class="fmeta">
+      <a class="fname" href="{{ url_for('admin.user_files', user_id=u.id) }}">{{ u.username }}
+        {% if u.is_admin %}<span class="badge">Admin</span>{% endif %}
+        {% if u.id == current_user.id %}<span class="badge subtle">You</span>{% endif %}
+      </a>
+      <span class="fsub">{{ u.file_count }} file{{ '' if u.file_count == 1 else 's' }} · {{ u.total_size | filesize }} · joined {{ u.created_at[:10] }}</span>
+    </div>
+    <div class="factions">
+      <a class="btn ghost sm" href="{{ url_for('admin.user_files', user_id=u.id) }}">{{ icon('folder') }}<span>Files</span></a>
+      {% if u.id != current_user.id %}
+      <form method="post" action="{{ url_for('admin.delete_user', user_id=u.id) }}" class="inline"
+            data-confirm="{{ 'Delete user ' ~ u.username ~ ' and ALL their files?' }}">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        <button class="btn danger sm icon-only" title="Delete user" aria-label="Delete {{ u.username }}">{{ icon('trash') }}</button>
+      </form>
+      {% endif %}
+    </div>
+  </div>
+  {% endfor %}
+  <p class="no-match" hidden>No users match your search.</p>
+</div>
+{% endblock %}

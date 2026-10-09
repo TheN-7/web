@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% block title %}Log in · File Portal{% endblock %}
+{% block main_class %}login-wrap{% endblock %}
+{% block content %}
+<div class="login-card glass glass-strong">
+  <div class="login-logo{% if custom.logo %} custom-logo{% endif %}">{% if custom.logo %}<img src="{{ custom.logo }}" alt="">{% else %}{{ icon('logo') }}{% endif %}</div>
+  <h1>Welcome back</h1>
+  <p class="muted">Sign in to open your private folder.</p>
+  <form method="post" class="stack">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+    <label class="field">
+      <span class="field-label">Username</span>
+      <span class="input-wrap">
+        {{ icon('user') }}
+        <input name="username" value="{{ request.form.get('username', '') }}" autocomplete="username" required autofocus>
+      </span>
+    </label>
+    <label class="field">
+      <span class="field-label">Password</span>
+      <span class="input-wrap">
+        {{ icon('lock') }}
+        <input name="password" type="password" autocomplete="current-password" required>
+        <button type="button" class="reveal" data-reveal aria-label="Show password">{{ icon('eye') }}</button>
+      </span>
+    </label>
+    <button class="btn primary full lg">Log in {{ icon('arrow-right') }}</button>
+  </form>
+  <p class="login-foot">{{ icon('shield') }} Your files are private to your account.</p>
+</div>
+{% endblock %}

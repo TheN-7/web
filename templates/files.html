@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% block title %}My files · File Portal{% endblock %}
+{% block content %}
+<div class="page-head">
+  <div>
+    <p class="eyebrow">Your private folder</p>
+    <h1>Hi, {{ current_user.username }} <span class="wave">👋</span></h1>
+  </div>
+</div>
+{% macro download_url(name) %}{{ url_for('download', filename=name) }}{% endmacro %}
+{% macro view_url(name) %}{{ url_for('view', filename=name) }}{% endmacro %}
+{% include "_file_table.html" %}
+{% endblock %}

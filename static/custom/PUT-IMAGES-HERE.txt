@@ -1,0 +1,16 @@
+Drop your own images in this folder. They are picked up automatically
+(no restart needed). Refresh the page to see them.
+
+  background.jpg   (or .jpeg / .png / .webp / .gif)
+      Full-screen background behind the glass panels.
+      Tip: a large image, e.g. 1920x1080 or bigger, under ~1 MB loads fastest.
+
+  logo.png         (or .svg / .webp / .jpg)
+      Replaces the folder icon in the top bar and on the login screen.
+      A square image works best.
+
+  favicon.ico      (or .png / .svg)
+      The little icon in the browser tab. A square PNG of 64x64 or larger
+      works fine. If there's no favicon but there is a logo, the logo is used.
+
+Delete or rename the file to go back to the default look.
